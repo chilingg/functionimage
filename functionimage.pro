@@ -26,10 +26,14 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        funccontroller.cpp
+    funcController.cpp \
+    funcview.cpp \
+    funcmodel.cpp
 
 HEADERS += \
-        funccontroller.h
+    funcController.h \
+    funcview.h \
+    funcmodel.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

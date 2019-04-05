@@ -1,4 +1,4 @@
-#include "funccontroller.h"
+#include "funcController.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])

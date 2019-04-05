@@ -1,4 +1,4 @@
-#include "funccontroller.h"
+#include "funcController.h"
 
 funcController::funcController(QWidget *parent)
     : QMainWindow(parent)

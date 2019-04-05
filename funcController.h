@@ -8,7 +8,7 @@ class funcController : public QMainWindow
     Q_OBJECT
 
 public:
-    funcController(QWidget *parent = 0);
+    funcController(QWidget *parent = nullptr);
     ~funcController();
 };
 

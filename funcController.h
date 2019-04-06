@@ -10,6 +10,10 @@ class funcController : public QMainWindow
 public:
     funcController(QWidget *parent = nullptr);
     ~funcController();
+
+private:
+    const float maxX = 4000.0f;
+    const unsigned maxImageNumber = 10;
 };
 
 #endif // FUNCCONTROLLER_H

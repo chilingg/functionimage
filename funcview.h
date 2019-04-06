@@ -2,12 +2,16 @@
 #define FUNCVIEW_H
 
 #include <QWidget>
+#include "funcmodel.h"
 
-class funcView : public QWidget
+class FuncView : public QWidget
 {
     Q_OBJECT
 public:
-    explicit funcView(QWidget *parent = nullptr);
+    explicit FuncView(const Calculation func, const unsigned length, QWidget *parent = nullptr);
+
+private:
+    FuncModel inModel;
 
 signals:
 

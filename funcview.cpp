@@ -1,6 +1,8 @@
 #include "funcview.h"
 
-funcView::funcView(QWidget *parent) : QWidget(parent)
+FuncView::FuncView(const Calculation func, const unsigned length, QWidget *parent) :
+    QWidget(parent),
+    inModel(func, length)
 {
 
 }

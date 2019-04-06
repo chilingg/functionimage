@@ -6,21 +6,20 @@
 #include <QPointF>
 #include <utility>
 
-class funcModel
+using Calculation = float (*)(float);
+
+class FuncModel
 {
-    using Calculation = float (*)(float);
     using Coordinates = std::map<int, float>;
     using FuncImage = std::pair<Calculation, Coordinates>;
 
 public:
-    funcModel(const Calculation func, const unsigned length);
-    bool addImage(const Calculation func);
-    bool removeImage(unsigned imageID);
+    explicit FuncModel(const Calculation func, const unsigned length);
+    void addImage(const Calculation func);
+    bool removeImage(const unsigned imageID);
 
 private:
     void buildImage(FuncImage &image);
-    static constexpr float maxX = 4000.0f;
-    static constexpr unsigned maxImageNumber = 10;
 
     int xBegin;
     int xEnd;
@@ -29,19 +28,14 @@ private:
     std::vector<FuncImage> funcImages;
 };
 
-inline bool funcModel::addImage(const Calculation func)
+inline void FuncModel::addImage(const Calculation func)
 {
-    if(imageNumber >= maxImageNumber)
-        return false;
-
     funcImages.push_back(std::make_pair(func, Coordinates()));
     buildImage(funcImages.back());
     ++imageNumber;
-
-    return true;
 }
 
-inline bool funcModel::removeImage(unsigned imageID)
+inline bool FuncModel::removeImage(const unsigned imageID)
 {
     if(imageID >= imageNumber)
         return false;

@@ -1,6 +1,6 @@
 #include "funcmodel.h"
 
-funcModel::funcModel(funcModel::Calculation func, const unsigned length):
+FuncModel::FuncModel(const Calculation func, const unsigned length):
     xBegin(-length/2),
     xEnd(length/2),
     imageNumber(1),
@@ -9,13 +9,10 @@ funcModel::funcModel(funcModel::Calculation func, const unsigned length):
     addImage(func);
 }
 
-void funcModel::buildImage(FuncImage &image)
+void FuncModel::buildImage(FuncImage &image)
 {
     for(int i = xBegin; i <= xEnd; ++i)
     {
         image.second[i] = image.first(i);
     }
 }
-
-constexpr float funcModel::maxX;
-constexpr unsigned funcModel::maxImageNumber;

@@ -8,33 +8,33 @@
 
 class funcModel
 {
-    using Coordinates = std::map<int, float>;
     using Calculation = float (*)(float);
+    using Coordinates = std::map<int, float>;
+    using FuncImage = std::pair<Calculation, Coordinates>;
 
 public:
-    funcModel(const Calculation func, unsigned length);
-    bool addImage();
+    funcModel(const Calculation func, const unsigned length);
+    bool addImage(const Calculation func);
     bool removeImage(unsigned imageID);
 
 private:
-    void buildImage(Coordinates &image);
+    void buildImage(FuncImage &image);
     static constexpr float maxX = 4000.0f;
     static constexpr unsigned maxImageNumber = 10;
 
     int xBegin;
     int xEnd;
-    const Calculation calFunc;
     unsigned imageNumber;
 
-    std::vector<Coordinates> funcImages;
+    std::vector<FuncImage> funcImages;
 };
 
-inline bool funcModel::addImage()
+inline bool funcModel::addImage(const Calculation func)
 {
     if(imageNumber >= maxImageNumber)
         return false;
 
-    funcImages.push_back(Coordinates());
+    funcImages.push_back(std::make_pair(func, Coordinates()));
     buildImage(funcImages.back());
     ++imageNumber;
 

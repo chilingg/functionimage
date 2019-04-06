@@ -1,20 +1,19 @@
 #include "funcmodel.h"
 
-funcModel::funcModel(funcModel::Calculation func, unsigned length):
+funcModel::funcModel(funcModel::Calculation func, const unsigned length):
     xBegin(-length/2),
     xEnd(length/2),
-    calFunc(func),
     imageNumber(1),
     funcImages()
 {
-    addImage();
+    addImage(func);
 }
 
-void funcModel::buildImage(funcModel::Coordinates &image)
+void funcModel::buildImage(FuncImage &image)
 {
     for(int i = xBegin; i <= xEnd; ++i)
     {
-        image[i] = calFunc(i);
+        image.second[i] = image.first(i);
     }
 }
 

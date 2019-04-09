@@ -2,6 +2,7 @@
 #define FUNCCONTROLLER_H
 
 #include <QMainWindow>
+#include "funcview.h"
 
 class funcController : public QMainWindow
 {
@@ -12,6 +13,8 @@ public:
     ~funcController();
 
 private:
+    Calculation func;
+    FuncView inView;
     const float maxX = 4000.0f;
     const unsigned maxImageNumber = 10;
 };

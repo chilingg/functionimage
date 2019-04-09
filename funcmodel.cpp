@@ -1,18 +1,10 @@
 #include "funcmodel.h"
 
-FuncModel::FuncModel(const Calculation func, const unsigned length):
-    xBegin(-length/2),
-    xEnd(length/2),
-    imageNumber(1),
-    funcImages()
+FuncModel::FuncModel(const Calculation func, const int begin, const int end):
+    xBegin(begin),
+    xEnd(end),
+    funcImages(std::make_pair(func, Coordinates()))
 {
-    addImage(func);
-}
-
-void FuncModel::buildImage(FuncImage &image)
-{
-    for(int i = xBegin; i <= xEnd; ++i)
-    {
-        image.second[i] = image.first(i);
-    }
+    for(int i = xBegin; i < xEnd; ++ i)
+        funcImages.second[i] = funcImages.first(i);
 }

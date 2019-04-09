@@ -5,43 +5,32 @@
 #include <vector>
 #include <QPointF>
 #include <utility>
-
-using Calculation = float (*)(float);
+#include "calculation.h"
 
 class FuncModel
 {
-    using Coordinates = std::map<int, float>;
+    using Coordinates = std::map<int, double>;
     using FuncImage = std::pair<Calculation, Coordinates>;
 
 public:
-    explicit FuncModel(const Calculation func, const unsigned length);
-    void addImage(const Calculation func);
-    bool removeImage(const unsigned imageID);
+    explicit FuncModel(const Calculation func, const int begin = -2000, const int end = 2000);
+    double yValue(int x) const;
 
 private:
-    void buildImage(FuncImage &image);
+    const int xBegin;
+    const int xEnd;
 
-    int xBegin;
-    int xEnd;
-    unsigned imageNumber;
-
-    std::vector<FuncImage> funcImages;
+    FuncImage funcImages;
 };
 
-inline void FuncModel::addImage(const Calculation func)
+inline double FuncModel::yValue(int x) const
 {
-    funcImages.push_back(std::make_pair(func, Coordinates()));
-    buildImage(funcImages.back());
-    ++imageNumber;
-}
+    auto iter = funcImages.second.find(x);
 
-inline bool FuncModel::removeImage(const unsigned imageID)
-{
-    if(imageID >= imageNumber)
-        return false;
+    if(iter != funcImages.second.end())
+        return iter->second;
 
-    funcImages.erase(funcImages.begin()+imageID);
-    return true;
+    return 0.0;
 }
 
 #endif // FUNCMODEL_H

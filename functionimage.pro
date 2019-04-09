@@ -28,12 +28,14 @@ SOURCES += \
         main.cpp \
     funcController.cpp \
     funcview.cpp \
-    funcmodel.cpp
+    funcmodel.cpp \
+    calculation.cpp
 
 HEADERS += \
     funcController.h \
     funcview.h \
-    funcmodel.h
+    funcmodel.h \
+    calculation.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

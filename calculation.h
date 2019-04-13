@@ -3,19 +3,14 @@
 
 #include <vector>
 
-using Polynomial = std::vector<std::pair<int, double>>;
 class Calculation
 {
 public:
-    explicit Calculation(double constant = 0, Polynomial pt = Polynomial()):
-        b(constant),
-        polynomials(pt)
-    {}
-    double operator()(double in) const;
+    explicit Calculation(double (*func)(double)):function(func) {}
+    double operator()(double input) const;
 
 private:
-    double b;
-    Polynomial polynomials;
+    double (*function)(double);
 };
 
 #endif // CALCULATION_H

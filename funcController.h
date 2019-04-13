@@ -2,6 +2,8 @@
 #define FUNCCONTROLLER_H
 
 #include <QMainWindow>
+#include <QWheelEvent>
+#include <QMouseEvent>
 #include "funcview.h"
 
 class funcController : public QMainWindow
@@ -10,12 +12,18 @@ class funcController : public QMainWindow
 
 public:
     funcController(QWidget *parent = nullptr);
-    ~funcController();
+    ~funcController() override;
+
+protected:
+    void wheelEvent(QWheelEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
 
 private:
     Calculation func;
     FuncView inView;
-    const float maxX = 4000.0f;
+    QPoint &offset;
+    QPoint movePos;
     const unsigned maxImageNumber = 10;
 };
 

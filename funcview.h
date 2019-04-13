@@ -8,22 +8,57 @@ class FuncView : public QWidget
 {
     Q_OBJECT
 public:
-    explicit FuncView(const Calculation func, const int length = 4000, QWidget *parent = nullptr);
+    explicit FuncView(const Calculation func, QWidget *parent = nullptr);
+    bool zoomin();
+    bool zoomout();
+    QPoint& getOffsetR();
+    int getUnitSize() const;
 
 protected:
-    void paintEvent(QPaintEvent *);
+    void paintEvent(QPaintEvent *) override;
 
 private:
     int beginPoint;
     int endPoint;
+    QPoint offset;
     FuncModel inModel;
-    const double scaleLevels[5];
-    unsigned scaleLevel;
+    const int scales[5];
+    unsigned level;
 
 signals:
 
 public slots:
 };
+
+inline bool FuncView::zoomin()
+{
+    if(level != sizeof(scales)/sizeof(unsigned)-1)
+    {
+        ++level;
+        return  true;
+    }
+    return false;
+}
+
+inline bool FuncView::zoomout()
+{
+    if(level != 0)
+    {
+        --level;
+        return  true;
+    }
+    return false;
+}
+
+inline QPoint &FuncView::getOffsetR()
+{
+    return offset;
+}
+
+inline int FuncView::getUnitSize() const
+{
+    return scales[level];
+}
 
 namespace IMAGE_COLOR {
     const QColor LUMINOSITY_0_0(0, 0, 0);	//Black

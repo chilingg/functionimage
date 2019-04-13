@@ -9,28 +9,33 @@
 
 class FuncModel
 {
-    using Coordinates = std::map<int, double>;
+    using Coordinates = std::map<double, double>;
     using FuncImage = std::pair<Calculation, Coordinates>;
 
 public:
-    explicit FuncModel(const Calculation func, const int begin = -2000, const int end = 2000);
-    double yValue(int x) const;
+    explicit FuncModel(const Calculation func);
+    double yValue(double x);
+    void wipeCacheImage();
 
 private:
-    const int xBegin;
-    const int xEnd;
-
     FuncImage funcImages;
 };
 
-inline double FuncModel::yValue(int x) const
+inline double FuncModel::yValue(double x)
 {
     auto iter = funcImages.second.find(x);
 
     if(iter != funcImages.second.end())
         return iter->second;
 
-    return 0.0;
+    funcImages.second[x] = funcImages.first(x);
+    return funcImages.second[x];
+}
+
+inline void FuncModel::wipeCacheImage()
+{
+    Coordinates emptyCoors = Coordinates();
+    funcImages.second.swap(emptyCoors);
 }
 
 #endif // FUNCMODEL_H

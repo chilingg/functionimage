@@ -29,63 +29,70 @@ void FuncView::paintEvent(QPaintEvent *)
     if(rulerOnOff)
         rulerSpace = 18;
 
-    painter.setWindow(-width()/2 + offset.x()*scales[level] - rulerSpace,
-                      height()/2 + offset.y()*scales[level] + rulerSpace,
-                      width(), -height());
+    int unitSize = scales[level];
+    QPoint viewLTP(-width()/2 + offset.x()*unitSize - rulerSpace,
+                    height()/2 + offset.y()*unitSize + rulerSpace);
     int imageWidth = width() - rulerSpace;
     int imageHeight = height() - rulerSpace;
-    int leftX = -imageWidth/2/scales[level]*scales[level] - scales[level] + offset.x()*scales[level];
-    int rightX = leftX + imageWidth + scales[level];
-    int bottomY = -imageHeight/2/scales[level]*scales[level] - scales[level] + offset.y()*scales[level];
-    int topY = bottomY + imageHeight + scales[level];
+    int column = imageWidth/2/unitSize*2;
+    int row = imageHeight/2/unitSize*2;
+    int leftX = -column/2*unitSize - unitSize + offset.x()*unitSize;
+    int rightX = -(leftX - offset.x()*unitSize);
+    int bottomY = -row/2*unitSize - unitSize + offset.y()*unitSize;
+    int topY = -(bottomY - offset.y()*unitSize);
 
+    painter.setWindow(viewLTP.x(), viewLTP.y(), width(), -height());
+
+    painter.setPen(IMAGE_COLOR::LUMINOSITY_0_0);
+    painter.drawRect(viewLTP.x(), viewLTP.y()-unitSize, rulerSpace, rulerSpace);
+    painter.drawLine(leftX, bottomY, leftX, topY);
+    /*
     //qDebug() << bottomY << topY << leftX << rightX;
-    if(scales[level] > 4 && rulerOnOff)
+    if(unitSize > 4 && rulerOnOff)
     {
         painter.setPen(IMAGE_COLOR::LUMINOSITY_5_238);
-        for(int i = 0; i < imageWidth+scales[level]; i += scales[level])
+        for(int i = 0; i < imageWidth+unitSize; i += unitSize)
         {
             painter.drawLine(leftX+i, bottomY, leftX+i, topY);
         }
-        for(int i = 0; i < imageHeight+scales[level]; i += scales[level])
+        for(int i = 0; i < imageHeight+unitSize; i += unitSize)
         {
             painter.drawLine(leftX, bottomY+i, rightX, bottomY+i);
         }
     }
-
     if(rulerOnOff)
     {
         int viewLX = leftX - rulerSpace;
         int viewLT = topY + rulerSpace;
         painter.setPen(IMAGE_COLOR::LUMINOSITY_2_102);
-        painter.drawRect(leftX, topY, scales[level], scales[level]);
+        painter.drawRect(leftX, topY, unitSize, unitSize);
         //painter.drawRect(viewLX, topY, width(), rulerSpace);
     }
 
     int ruler = 1;
     painter.setPen(IMAGE_COLOR::LUMINOSITY_2_102);
-    for(int i = 0; i < imageWidth/scales[level]+2; ++i)
+    for(int i = 0; i < imageWidth/unitSize+2; ++i)
     {
-        painter.drawLine(i*scales[level]+leftX, -ruler, i*scales[level]+leftX, ruler);
+        painter.drawLine(i*unitSize+leftX, -ruler, i*unitSize+leftX, ruler);
     }
-    for(int i = 0; i < imageHeight/scales[level]+2; ++i)
+    for(int i = 0; i < imageHeight/unitSize+2; ++i)
     {
-        painter.drawLine(-ruler, i*scales[level]+bottomY, ruler, i*scales[level]+bottomY);
+        painter.drawLine(-ruler, i*unitSize+bottomY, ruler, i*unitSize+bottomY);
     }
 
     ruler = 3;
     painter.setPen(IMAGE_COLOR::LUMINOSITY_2_68);
-    int displayMin10X = leftX/scales[level]/10*10*scales[level];
-    for(int i = 0; i < imageWidth/scales[level]+2; i += 10)
+    int displayMin10X = leftX/unitSize/10*10*unitSize;
+    for(int i = 0; i < imageWidth/unitSize+2; i += 10)
     {
-        painter.drawLine(i*scales[level]+displayMin10X, -ruler, i*scales[level]+displayMin10X, ruler);
+        painter.drawLine(i*unitSize+displayMin10X, -ruler, i*unitSize+displayMin10X, ruler);
     }
-    int displayMin10Y = bottomY/scales[level]/10*10*scales[level];
-    int displayMax10Y = topY/scales[level]/10*10*scales[level];
-    qDebug() << displayMax10Y/scales[level] << displayMin10Y/scales[level];
-    for(int i = 0; i < displayMax10Y/scales[level]; i += 10)
+    int displayMin10Y = bottomY/unitSize/10*10*unitSize;
+    int displayMax10Y = topY/unitSize/10*10*unitSize;
+    qDebug() << displayMax10Y/unitSize << displayMin10Y/unitSize;
+    for(int i = 0; i < displayMax10Y/unitSize; i += 10)
     {
-        painter.drawLine(-ruler, i*scales[level]+displayMin10Y, ruler, i*scales[level]+displayMin10Y);
+        painter.drawLine(-ruler, i*unitSize+displayMin10Y, ruler, i*unitSize+displayMin10Y);
     }
 
     painter.setPen(IMAGE_COLOR::LUMINOSITY_2_68);
@@ -99,7 +106,7 @@ void FuncView::paintEvent(QPaintEvent *)
         for(int i = leftX; i < rightX; ++i)
         {
             double di = static_cast<double>(i);
-            double temp = model.first.yValue(di/scales[level]) * scales[level];
+            double temp = model.first.yValue(di/unitSize) * unitSize;
             if(std::isnan(temp))
             {
                 qDebug() << "NaN in startY!";
@@ -119,7 +126,7 @@ void FuncView::paintEvent(QPaintEvent *)
             }
 
             int endY;
-            temp = model.first.yValue((di+1.0)/scales[level]) * scales[level];
+            temp = model.first.yValue((di+1.0)/unitSize) * unitSize;
             if(std::isinf(temp))
                 temp > 0.0 ? endY = topY : endY = bottomY;
             else if(std::isnan(temp))
@@ -147,5 +154,5 @@ void FuncView::paintEvent(QPaintEvent *)
             }
             painter.drawLine(i, startY, i+1, endY);
         }
-    }
+    }*/
 }

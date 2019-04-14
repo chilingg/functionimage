@@ -6,7 +6,7 @@ double function(double input);
 funcController::funcController(QWidget *parent)
     : QMainWindow(parent),
       func(function),
-      inView(func),
+      inView(),
       offset(inView.getOffsetR()),
       movePos()
 {
@@ -14,6 +14,8 @@ funcController::funcController(QWidget *parent)
     resize(840, 720);
     setWindowState(Qt::WindowMaximized);
     setCentralWidget(&inView);
+
+    inView.addModelImage(func);
 }
 
 funcController::~funcController()
@@ -43,12 +45,14 @@ void funcController::mouseMoveEvent(QMouseEvent *event)
             offset.rx() -= moveLengthX;
             movePos.setX(event->pos().x());
         }
-        int moveLengthY = (event->pos().y() - movePos.y() / inView.getUnitSize());
+        int moveLengthY = (event->pos().y() - movePos.y()) / inView.getUnitSize();
         if(moveLengthY != 0)
         {
             offset.ry() += moveLengthY;
             movePos.setY(event->pos().y());
         }
+        //qDebug() << event->pos() << movePos << inView.getUnitSize();
+        //qDebug() << moveLengthX << moveLengthY << offset;
         inView.update();
     }
 }

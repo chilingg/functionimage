@@ -12,5 +12,6 @@
         <file alias="9">resource/text/9.png</file>
         <file alias="-">resource/text/minus.png</file>
         <file alias="point">resource/text/point.png</file>
+        <file alias="camma">resource/text/comma.png</file>
     </qresource>
 </RCC>

@@ -65,14 +65,10 @@ private:
     std::list<std::pair<FuncModel, QColor>> inModels;
     const int scales[5];
     unsigned level;
-    QImage numbers[12];
+    QImage numbers[13];
     QPoint mousePos;
-    int rulerSpace;
-    int imageWidth;
-    int imageHeight;
 
     bool gridOnOff;
-    bool accuretaOnOff;
     bool numberOnOff;
 
 signals:
@@ -131,7 +127,7 @@ inline void FuncView::removeModelImage(unsigned index)
 
 inline bool FuncView::isInView(QPoint pos)
 {
-    QRect imageViewRc(QPoint(rulerSpace, rulerSpace), QPoint(imageWidth, imageHeight));
+    QRect imageViewRc(QPoint(0, 0), QPoint(width(), height()));
     //qDebug() << imageViewRc << pos << imageWidth << imageHeight;
     return imageViewRc.contains(pos);
 }

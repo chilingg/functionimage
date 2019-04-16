@@ -21,14 +21,11 @@ FuncView::FuncView(QWidget *parent) :
         QImage(":/texts/8"),
         QImage(":/texts/9"),
         QImage(":/texts/-"),
-        QImage(":/texts/point")
+        QImage(":/texts/point"),
+        QImage(":/texts/camma")
         },
     mousePos(0, 0),
-    rulerSpace(0),
-    imageWidth(0),
-    imageHeight(0),
     gridOnOff(true),
-    accuretaOnOff(true),
     numberOnOff(true)
 {
     QPalette pal(palette());
@@ -36,7 +33,8 @@ FuncView::FuncView(QWidget *parent) :
     setAutoFillBackground((true));
     setPalette(pal);
 
-    for(int i = 0; i < 10; ++i)
+    numbers[12].save("comma.png");
+    for(size_t i = 0; i < sizeof(numbers)/sizeof(QImage); ++i)
     {
         numbers[i] = numbers[i].mirrored();
     }
@@ -46,18 +44,11 @@ void FuncView::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
-    if(accuretaOnOff)
-        rulerSpace = 18;
-    else
-        rulerSpace = 0;
-
     int unitSize = scales[level];
-    QPoint viewLTP((-width() - rulerSpace)/2 + offset.x()*unitSize,
-                    (height() + rulerSpace)/2 + offset.y()*unitSize);
-    imageWidth = width() - rulerSpace;
-    imageHeight = height() - rulerSpace;
-    int column = imageWidth/2/unitSize*2 + 2;
-    int row = imageHeight/2/unitSize*2 + 2;
+    QPoint viewLTP(-width()/2 + offset.x()*unitSize,
+                    height()/2 + offset.y()*unitSize);
+    int column = width()/2/unitSize*2 + 2;
+    int row = height()/2/unitSize*2 + 2;
     int leftX = -column/2*unitSize + offset.x()*unitSize;
     int rightX = leftX + column*unitSize;
     int bottomY = -row/2*unitSize + offset.y()*unitSize;
@@ -208,48 +199,83 @@ void FuncView::paintEvent(QPaintEvent *)
     painter.drawLine(0, bottomY, 0, topY);
     painter.drawLine(leftX, 0, rightX, 0);
 
-    if(accuretaOnOff)
+    //qDebug() << mousePos;
+    if(!mousePos.isNull())
     {
-        painter.setPen(Qt::NoPen);
-        painter.setBrush(IMAGE_COLOR::LUMINOSITY_5_238);
-        painter.drawRect(viewLTP.x(), viewLTP.y(), rulerSpace, -height());
-        painter.drawRect(viewLTP.x(), viewLTP.y(), width()-1, -rulerSpace);
-        painter.setBrush(QBrush());
+        int imgMouseX = viewLTP.x() + mousePos.x();
+        int imgMouseY = viewLTP.y() - mousePos.y();
 
-        //qDebug() << mousePos;
-        if(!mousePos.isNull())
+        double xValue = imgMouseX * 1.0 / unitSize;
+        int pp = imgMouseX + 4;
+        int pW = numbers[0].width();
+        if(xValue < 0)
         {
-            int imgMouseX = viewLTP.x() + mousePos.x();
-            int imgMouseY = viewLTP.y() - mousePos.y();
-            painter.setPen(QPen(IMAGE_COLOR::IC_LIGHTRED, 1, Qt::DashLine));
-            painter.drawLine(imgMouseX, viewLTP.y(), imgMouseX, imgMouseY);
-            painter.drawLine(viewLTP.x(), imgMouseY, imgMouseX, imgMouseY);
+            painter.drawImage(pp, imgMouseY, numbers[10]);
+            pp += pW;
+            xValue = -xValue;
+        }
+        int numToStr = static_cast<int>(xValue);
+        for(int j = numToStr; j != 0; j /= 10)
+        {
+            reverse.push(j % 10);
+        }
+        if(reverse.empty())
+            reverse.push(0);
+        while(!reverse.empty())
+        {
+            painter.drawImage(pp, imgMouseY, numbers[reverse.top()]);
+            reverse.pop();
+            pp += pW;
+        }
+        painter.drawImage(pp, imgMouseY, numbers[11]);
+        pp += pW;
+        //小数部分
+        numToStr = static_cast<int>((xValue-numToStr) * 100);
+        reverse.push(numToStr%10);
+        reverse.push(numToStr/10);
+        while(!reverse.empty())
+        {
+            painter.drawImage(pp, imgMouseY, numbers[reverse.top()]);
+            reverse.pop();
+            pp += pW;
+        }
 
-            double xValue = imgMouseX * 1.0 / unitSize;
-            double yValue = imgMouseY * 1.0 / unitSize;
-            qDebug() << xValue << yValue;
-            int numToStr = static_cast<int>(xValue);
+        pp += 2;
+        painter.drawImage(pp, imgMouseY, numbers[12]);
+        pp += pW + 5;
 
-            int pp = imgMouseX + 4;
-            int pW = numbers[0].width();
-            if(numToStr < 0)
-            {
-                painter.drawImage(pp, viewLTP.y()-12, numbers[10]);
-                pp += pW;
-                numToStr = -numToStr;
-            }
-            for(int j = numToStr; j != 0; j /= 10)
-            {
-                reverse.push(j % 10);
-            }
-            if(reverse.empty())
-                reverse.push(0);
-            while(!reverse.empty())
-            {
-                painter.drawImage(pp, viewLTP.y()-12, numbers[reverse.top()]);
-                reverse.pop();
-                pp += pW;
-            }
+        //Y值
+        double yValue = imgMouseY * 1.0 / unitSize;
+        if(yValue < 0)
+        {
+            painter.drawImage(pp, imgMouseY, numbers[10]);
+            pp += pW;
+            yValue = -yValue;
+        }
+        numToStr = static_cast<int>(yValue);
+        for(int j = numToStr; j != 0; j /= 10)
+        {
+            reverse.push(j % 10);
+        }
+        if(reverse.empty())
+            reverse.push(0);
+        while(!reverse.empty())
+        {
+            painter.drawImage(pp, imgMouseY, numbers[reverse.top()]);
+            reverse.pop();
+            pp += pW;
+        }
+        painter.drawImage(pp, imgMouseY, numbers[11]);
+        pp += pW;
+        //小数部分
+        numToStr = static_cast<int>((yValue-numToStr) * 100);
+        reverse.push(numToStr%10);
+        reverse.push(numToStr/10);
+        while(!reverse.empty())
+        {
+            painter.drawImage(pp, imgMouseY, numbers[reverse.top()]);
+            reverse.pop();
+            pp += pW;
         }
     }
 

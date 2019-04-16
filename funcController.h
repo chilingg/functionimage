@@ -18,11 +18,13 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
     Calculation func;
-    FuncView inView;
+    FuncView view;
     QPoint &offset;
+    QPoint &mousePos;
     QPoint movePos;
     const unsigned maxImageNumber = 10;
 };

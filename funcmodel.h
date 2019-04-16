@@ -34,8 +34,9 @@ inline double FuncModel::yValue(double x)
 
 inline void FuncModel::wipeCacheImage()
 {
-    Coordinates emptyCoors = Coordinates();
-    funcImages.second.swap(emptyCoors);
+    //Coordinates emptyCoors = Coordinates();
+    //funcImages.second.swap(emptyCoors);
+    funcImages.second.clear();
 }
 
 #endif // FUNCMODEL_H

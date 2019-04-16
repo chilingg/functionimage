@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/texts">
+        <file alias="0">resource/text/0.png</file>
+        <file alias="1">resource/text/1.png</file>
+        <file alias="2">resource/text/2.png</file>
+        <file alias="3">resource/text/3.png</file>
+        <file alias="4">resource/text/4.png</file>
+        <file alias="5">resource/text/5.png</file>
+        <file alias="6">resource/text/6.png</file>
+        <file alias="7">resource/text/7.png</file>
+        <file alias="8">resource/text/8.png</file>
+        <file alias="9">resource/text/9.png</file>
+        <file alias="-">resource/text/minus.png</file>
+        <file alias="point">resource/text/point.png</file>
+    </qresource>
+</RCC>

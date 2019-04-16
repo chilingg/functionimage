@@ -2,9 +2,11 @@
 #define FUNCVIEW_H
 
 #include <QWidget>
+#include <QImage>
 #include <list>
 #include <utility>
 #include "funcmodel.h"
+#include <QDebug>
 
 namespace IMAGE_COLOR {
     const QColor LUMINOSITY_0_0(0, 0, 0);	//Black
@@ -36,6 +38,7 @@ namespace IMAGE_COLOR {
     const QColor IC_CYAN(0, 255, 255);
     const QColor IC_BLUE(0, 0, 255);
     const QColor IC_MAGENTA(255, 0, 255);
+    const QColor IC_LIGHTRED(255, 127, 127);
 }
 
 class FuncView : public QWidget
@@ -45,24 +48,31 @@ public:
     explicit FuncView(QWidget *parent = nullptr);
     bool zoomin();
     bool zoomout();
-    QPoint& getOffsetR();
+    QPoint &getOffsetR();
+    QPoint &getMousePosR();
     int getUnitSize() const;
     void addModelImage(Calculation func, QColor color = IMAGE_COLOR::IC_RED);
     void removeModelImage(unsigned index);
+    bool isInView(QPoint pos);
 
 protected:
     void paintEvent(QPaintEvent *) override;
 
 private:
-    int beginPoint;
-    int endPoint;
+    void clearImage();
+
     QPoint offset;
     std::list<std::pair<FuncModel, QColor>> inModels;
     const int scales[5];
     unsigned level;
+    QImage numbers[12];
+    QPoint mousePos;
+    int rulerSpace;
+    int imageWidth;
+    int imageHeight;
 
     bool gridOnOff;
-    bool rulerOnOff;
+    bool accuretaOnOff;
     bool numberOnOff;
 
 signals:
@@ -74,6 +84,7 @@ inline bool FuncView::zoomin()
 {
     if(level != sizeof(scales)/sizeof(unsigned)-1)
     {
+        clearImage();
         ++level;
         return  true;
     }
@@ -84,6 +95,7 @@ inline bool FuncView::zoomout()
 {
     if(level != 0)
     {
+        clearImage();
         --level;
         return  true;
     }
@@ -93,6 +105,11 @@ inline bool FuncView::zoomout()
 inline QPoint &FuncView::getOffsetR()
 {
     return offset;
+}
+
+inline QPoint &FuncView::getMousePosR()
+{
+    return mousePos;
 }
 
 inline int FuncView::getUnitSize() const
@@ -110,6 +127,13 @@ inline void FuncView::removeModelImage(unsigned index)
     auto it = inModels.begin();
     std::advance(it, index);
     inModels.erase(it);
+}
+
+inline bool FuncView::isInView(QPoint pos)
+{
+    QRect imageViewRc(QPoint(rulerSpace, rulerSpace), QPoint(imageWidth, imageHeight));
+    //qDebug() << imageViewRc << pos << imageWidth << imageHeight;
+    return imageViewRc.contains(pos);
 }
 
 #endif // FUNCVIEW_H

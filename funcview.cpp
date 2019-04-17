@@ -205,8 +205,8 @@ void FuncView::paintEvent(QPaintEvent *)
     //qDebug() << mousePos;
     if(!mousePos.isNull())
     {
-        int imgMouseX = viewLTP.x() + mousePos.x();
-        int imgMouseY = viewLTP.y() - mousePos.y();
+        int imgMouseX = viewLTP.x() + mapFromGlobal(mousePos).x();
+        int imgMouseY = viewLTP.y() - mapFromGlobal(mousePos).y();
 
         double xValue = imgMouseX * 1.0 / unitSize;
         int pp = imgMouseX + 4;

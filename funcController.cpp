@@ -3,8 +3,10 @@
 
 funcController::funcController(QWidget *parent)
     : QWidget(parent),
-      view(new FuncView(this)),
+      view(new FuncView),
       mainLayout(new QHBoxLayout(this)),
+      rightLayout(new QVBoxLayout),
+      console(new QWidget),
       offset(view->getOffsetR()),
       mousePos(view->getMousePosR()),
       movePos()
@@ -13,8 +15,14 @@ funcController::funcController(QWidget *parent)
     resize(840, 720);
     //setWindowState(Qt::WindowMaximized);
 
-    setLayout(mainLayout);
     mainLayout->addWidget(view);
+    mainLayout->addWidget(console);
+
+    console->setMaximumWidth(180);
+    console->setLayout(rightLayout);
+
+    addImageCombo = new QComboBox;
+    rightLayout->addWidget(addImageCombo);
 
     view->addModelImage("x / (1 - x)");
 }
@@ -36,7 +44,7 @@ void funcController::mousePressEvent(QMouseEvent *event)
         movePos = event->pos();
     if(event->button() == Qt::LeftButton)
     {
-        mousePos = event->pos();
+        mousePos = event->globalPos();
         //qDebug() << "c" << mousePos << view->isInView(mousePos);
         if(view->isInView(mousePos))
             view->update();
@@ -65,7 +73,7 @@ void funcController::mouseMoveEvent(QMouseEvent *event)
     }
     if(event->buttons() == Qt::LeftButton)
     {
-        mousePos = event->pos();
+        mousePos = event->globalPos();
         if(view->isInView(mousePos))
             view->update();
         else

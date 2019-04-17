@@ -127,6 +127,7 @@ inline void FuncView::removeModelImage(unsigned index)
 
 inline bool FuncView::isInView(QPoint pos)
 {
+    pos = mapFromGlobal(pos);
     QRect imageViewRc(QPoint(0, 0), QPoint(width(), height()));
     //qDebug() << imageViewRc << pos << imageWidth << imageHeight;
     return imageViewRc.contains(pos);

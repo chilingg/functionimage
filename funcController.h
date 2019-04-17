@@ -5,6 +5,8 @@
 #include <QWheelEvent>
 #include <QMouseEvent>
 #include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QComboBox>
 #include "funcview.h"
 
 class funcController : public QWidget
@@ -24,7 +26,9 @@ protected:
 private:
     FuncView *view;
     QHBoxLayout *mainLayout;
-    //QLabel *console;
+    QVBoxLayout *rightLayout;
+    QWidget *console;
+    QComboBox *addImageCombo;
     QPoint &offset;
     QPoint &mousePos;
     QPoint movePos;

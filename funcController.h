@@ -1,12 +1,13 @@
 #ifndef FUNCCONTROLLER_H
 #define FUNCCONTROLLER_H
 
-#include <QMainWindow>
+#include <QWidget>
 #include <QWheelEvent>
 #include <QMouseEvent>
+#include <QHBoxLayout>
 #include "funcview.h"
 
-class funcController : public QMainWindow
+class funcController : public QWidget
 {
     Q_OBJECT
 
@@ -21,12 +22,12 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
-    Calculation func;
-    FuncView view;
+    FuncView *view;
+    QHBoxLayout *mainLayout;
+    //QLabel *console;
     QPoint &offset;
     QPoint &mousePos;
     QPoint movePos;
-    const unsigned maxImageNumber = 10;
 };
 
 #endif // FUNCCONTROLLER_H

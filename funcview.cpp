@@ -33,7 +33,6 @@ FuncView::FuncView(QWidget *parent) :
     setAutoFillBackground((true));
     setPalette(pal);
 
-    numbers[12].save("comma.png");
     for(size_t i = 0; i < sizeof(numbers)/sizeof(QImage); ++i)
     {
         numbers[i] = numbers[i].mirrored();
@@ -74,6 +73,10 @@ void FuncView::paintEvent(QPaintEvent *)
 
     for(auto model : inModels)
     {
+        //忽视无效的模型
+        if(!model.first.valid())
+            continue;
+
         painter.setPen(model.second);
         for(int i = leftX; i < rightX; ++i)
         {
@@ -84,7 +87,7 @@ void FuncView::paintEvent(QPaintEvent *)
                 qDebug() << "NaN in startY!";
                 continue;
             }
-            int startY = static_cast<int>(temp);
+            int startY = qRound(temp);
             static int ignore = 0;
             if(startY < bottomY)
             {
@@ -108,7 +111,7 @@ void FuncView::paintEvent(QPaintEvent *)
             }
             else
             {
-                endY = static_cast<int>(temp);
+                endY = qRound(temp);
                 if(endY < bottomY)
                 {
                     endY = bottomY;

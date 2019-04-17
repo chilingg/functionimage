@@ -16,9 +16,11 @@ public:
     explicit FuncModel(const Calculation func);
     double yValue(double x);
     void wipeCacheImage();
+    bool valid() const { return status; }
 
 private:
     FuncImage funcImages;
+    bool status;
 };
 
 inline double FuncModel::yValue(double x)

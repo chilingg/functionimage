@@ -12,7 +12,7 @@ Calculation::Calculation(std::string str):
     regex reg("[\\d+-/*()^]*x[\\d+-/*()x^]*");
     if(!regex_match(str, reg))
     {
-        qDebug() << "Calculation:: unexpected character!";
+        qDebug() << "Calculation:: unexpected character!" << str.c_str();
         status = false;
     }
 
@@ -27,6 +27,5 @@ Calculation::Calculation(const char *c):
 
 double Calculation::operator()(double input) const
 {
-    return function(input);
+    return input;
 }
-

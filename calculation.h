@@ -15,7 +15,6 @@ public:
 private:
     bool status;
     int addition[4];
-    double (*function)(double);
 };
 
 #endif // CALCULATION_H

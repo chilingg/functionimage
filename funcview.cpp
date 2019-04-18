@@ -39,6 +39,11 @@ FuncView::FuncView(QWidget *parent) :
     }
 }
 
+FuncView::FuncImage &FuncView::getFuncImage(unsigned index)
+{
+    return inModels[index];
+}
+
 void FuncView::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
@@ -292,7 +297,7 @@ void FuncView::paintEvent(QPaintEvent *)
 */
 }
 
-void FuncView::clearImage()
+void FuncView::clearImageWipeCache()
 {
     for(auto img : inModels)
     {

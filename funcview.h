@@ -45,24 +45,29 @@ class FuncView : public QWidget
 {
     Q_OBJECT
 public:
+    using FuncImage = std::pair<FuncModel, QColor>;
     explicit FuncView(QWidget *parent = nullptr);
     bool zoomin();
     bool zoomout();
     QPoint &getOffsetR();
     QPoint &getMousePosR();
     int getUnitSize() const;
-    void addModelImage(Calculation func, QColor color = IMAGE_COLOR::IC_RED);
+    unsigned addModelImage(Calculation func = "", QColor color = IMAGE_COLOR::IC_RED);
     void removeModelImage(unsigned index);
+    void clearModelImage();
     bool isInView(QPoint pos);
+    void changeImageColor(unsigned index, QColor color);
+    bool changeImageFunc(unsigned index, std::string str);
+    FuncImage &getFuncImage(unsigned index);
 
 protected:
     void paintEvent(QPaintEvent *) override;
 
 private:
-    void clearImage();
+    void clearImageWipeCache();
 
     QPoint offset;
-    std::list<std::pair<FuncModel, QColor>> inModels;
+    std::vector<FuncImage> inModels;
     const int scales[5];
     unsigned level;
     QImage numbers[13];
@@ -80,7 +85,7 @@ inline bool FuncView::zoomin()
 {
     if(level != sizeof(scales)/sizeof(unsigned)-1)
     {
-        clearImage();
+        clearImageWipeCache();
         ++level;
         return  true;
     }
@@ -91,7 +96,7 @@ inline bool FuncView::zoomout()
 {
     if(level != 0)
     {
-        clearImage();
+        clearImageWipeCache();
         --level;
         return  true;
     }
@@ -113,9 +118,10 @@ inline int FuncView::getUnitSize() const
     return scales[level];
 }
 
-inline void FuncView::addModelImage(Calculation func, QColor color)
+inline unsigned FuncView::addModelImage(Calculation func, QColor color)
 {
     inModels.push_back({FuncModel(func), color});
+    return inModels.size();
 }
 
 inline void FuncView::removeModelImage(unsigned index)
@@ -125,12 +131,29 @@ inline void FuncView::removeModelImage(unsigned index)
     inModels.erase(it);
 }
 
+inline void FuncView::clearModelImage()
+{
+    std::vector<FuncImage> temp;
+    swap(inModels, temp);
+}
+
 inline bool FuncView::isInView(QPoint pos)
 {
     pos = mapFromGlobal(pos);
     QRect imageViewRc(QPoint(0, 0), QPoint(width(), height()));
     //qDebug() << imageViewRc << pos << imageWidth << imageHeight;
     return imageViewRc.contains(pos);
+}
+
+inline void FuncView::changeImageColor(unsigned index, QColor color)
+{
+    inModels[index].second = color;
+}
+
+inline bool FuncView::changeImageFunc(unsigned index, std::string str)
+{
+    inModels[index].first.changeFunc(str);
+    return inModels[index].first.valid();
 }
 
 #endif // FUNCVIEW_H

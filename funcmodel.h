@@ -17,6 +17,7 @@ public:
     double yValue(double x);
     void wipeCacheImage();
     bool valid() const { return status; }
+    void changeFunc(std::string str);
 
 private:
     FuncImage funcImages;
@@ -39,6 +40,12 @@ inline void FuncModel::wipeCacheImage()
     //Coordinates emptyCoors = Coordinates();
     //funcImages.second.swap(emptyCoors);
     funcImages.second.clear();
+}
+
+inline void FuncModel::changeFunc(std::string str)
+{
+    funcImages.first = str;
+    status = funcImages.first.valid();
 }
 
 #endif // FUNCMODEL_H

@@ -12,7 +12,7 @@ FuncController::FuncController(QWidget *parent)
       imageType(new QComboBox),
       addImageBtn(new QPushButton("新增")),
       clearImageBtn(new QPushButton("清除")),
-      imageLabels(),
+      imgLabels(),
       offset(view->getOffsetR()),
       mousePos(view->getMousePosR()),
       movePos()
@@ -37,11 +37,10 @@ FuncController::FuncController(QWidget *parent)
     rightLayout->addWidget(imageType);
     rightLayout->addLayout(btnLayout);
     rightLayout->addSpacing(6);
+    rightLayout->addLayout(imgLabelLayout);
     //rightLayout->addWidget(new ImageLabel(0, imageType->currentText(), this));
     addImageLabel();
     rightLayout->addStretch();
-
-    view->addModelImage("x / (1 - x)");
 }
 
 FuncController::~FuncController()
@@ -57,6 +56,7 @@ void FuncController::wheelEvent(QWheelEvent *event)
 
 void FuncController::mousePressEvent(QMouseEvent *event)
 {
+    //QColorDialog::getColor(Qt::red, this);
     if(event->button() == Qt::MidButton)
         movePos = event->pos();
     if(event->button() == Qt::LeftButton)
@@ -109,14 +109,29 @@ void FuncController::mouseReleaseEvent(QMouseEvent *event)
 
 void FuncController::addImageLabel()
 {
-    imageLabels.push_back(new ImageLabel(view->addModelImage(), view, imageType->currentText()));
-    rightLayout->addWidget(imageLabels.back());
+    imgLabels.push_back(new ImageLabel(view->addModelImage("x / (1 - x)"), view, imageType->currentText()));
+    imgLabelLayout->addWidget(imgLabels.back());
+    connect(imgLabels.back(), &ImageLabel::deleteSelf, this, &FuncController::deleteImgLab);
 }
 
 void FuncController::clearImageLabel()
 {
-    imageLabels.clear();
+    for(auto lab : imgLabels)
+        delete lab;
+    imgLabels.clear();
     view->clearModelImage();
+}
+
+void FuncController::deleteImgLab(unsigned index)
+{
+    auto it = imgLabels.begin();
+    std::advance(it, index);
+    delete *it;
+    imgLabels.erase(it);
+
+    //更新label对应的图像索引
+    for(unsigned i = 0; i < imgLabels.size(); ++i)
+        imgLabels[i]->setImgIndex(i);
 }
 
 ImageLabel::ImageLabel(unsigned index, FuncView *v, QString title, QWidget *parent):
@@ -147,6 +162,7 @@ ImageLabel::ImageLabel(unsigned index, FuncView *v, QString title, QWidget *pare
     closeBtn->setFlat(true);
     closeBtn->setIcon(QIcon(":/texts/close"));
     closeBtn->setMaximumSize(16, 16);
+    connect(closeBtn, &QPushButton::clicked, this, &ImageLabel::removeImage);
 
     layout->addWidget(getColorBtn, 0, 0);
     layout->addWidget(titleLabel, 0, 1);
@@ -171,4 +187,10 @@ void ImageLabel::setImgColor()
 
         view->getFuncImage(imgIndex).second = imgColor;
     }
+}
+
+void ImageLabel::removeImage()
+{
+    view->removeModelImage(imgIndex);
+    emit deleteSelf(imgIndex);
 }

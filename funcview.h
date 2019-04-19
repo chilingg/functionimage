@@ -121,7 +121,7 @@ inline int FuncView::getUnitSize() const
 inline unsigned FuncView::addModelImage(Calculation func, QColor color)
 {
     inModels.push_back({FuncModel(func), color});
-    return inModels.size();
+    return inModels.size() - 1;
 }
 
 inline void FuncView::removeModelImage(unsigned index)

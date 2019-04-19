@@ -42,10 +42,13 @@ private:
     QComboBox *imageType;
     QPushButton *addImageBtn;
     QPushButton *clearImageBtn;
-    std::vector<ImageLabel*> imageLabels;
+    std::vector<ImageLabel*> imgLabels;
     QPoint &offset;
     QPoint &mousePos;
     QPoint movePos;
+
+public slots:
+    void deleteImgLab(unsigned index);
 };
 
 class ImageLabel : public QWidget
@@ -54,9 +57,8 @@ class ImageLabel : public QWidget
 public:
     ImageLabel(unsigned index, FuncView *v, QString titleLabel, QWidget *parent = nullptr);
     ~ImageLabel();
-
-public slots:
-    void setImgColor();
+    void setImgIndex(unsigned value) { imgIndex = value; }
+    unsigned getImgIndex() const { return imgIndex; }
 
 private:
     unsigned imgIndex;
@@ -68,6 +70,13 @@ private:
     QPushButton *closeBtn;
     QLabel *titleLabel;
     QLineEdit *funcEdit;
+
+signals:
+    void deleteSelf(unsigned index);
+
+public slots:
+    void setImgColor();
+    void removeImage();
 };
 
 #endif // FUNCCONTROLLER_H

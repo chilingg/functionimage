@@ -52,12 +52,12 @@ public:
     QPoint &getOffsetR();
     QPoint &getMousePosR();
     int getUnitSize() const;
-    unsigned addModelImage(Calculation func = "", QColor color = IMAGE_COLOR::IC_RED);
+    unsigned addModelImage(Calculation func = Calculation(""), QColor color = IMAGE_COLOR::IC_RED);
     void removeModelImage(unsigned index);
     void clearModelImage();
     bool isInView(QPoint pos);
     void changeImageColor(unsigned index, QColor color);
-    bool changeImageFunc(unsigned index, std::string str);
+    bool changeImageFunc(unsigned index, QString str);
     FuncImage &getFuncImage(unsigned index);
 
 protected:
@@ -150,7 +150,7 @@ inline void FuncView::changeImageColor(unsigned index, QColor color)
     inModels[index].second = color;
 }
 
-inline bool FuncView::changeImageFunc(unsigned index, std::string str)
+inline bool FuncView::changeImageFunc(unsigned index, QString str)
 {
     inModels[index].first.changeFunc(str);
     return inModels[index].first.valid();

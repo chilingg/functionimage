@@ -55,7 +55,7 @@ class ImageLabel : public QWidget
 {
     Q_OBJECT
 public:
-    ImageLabel(unsigned index, FuncView *v, QString titleLabel, QWidget *parent = nullptr);
+    ImageLabel(unsigned index, FuncView *v, const QString &titleLabel, QWidget *parent = nullptr);
     ~ImageLabel();
     void setImgIndex(unsigned value) { imgIndex = value; }
     unsigned getImgIndex() const { return imgIndex; }
@@ -64,10 +64,10 @@ private:
     unsigned imgIndex;
     FuncView *view;
     QColor imgColor;
-    std::string funcStr;
     QGridLayout *layout;
     QPushButton *getColorBtn;
     QPushButton *closeBtn;
+    const QString imgTitle;
     QLabel *titleLabel;
     QLineEdit *funcEdit;
 
@@ -77,6 +77,7 @@ signals:
 public slots:
     void setImgColor();
     void removeImage();
+    void setImageFunc();
 };
 
 #endif // FUNCCONTROLLER_H

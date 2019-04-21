@@ -39,7 +39,7 @@ FuncController::FuncController(QWidget *parent)
     rightLayout->addSpacing(6);
     rightLayout->addLayout(imgLabelLayout);
     //rightLayout->addWidget(new ImageLabel(0, imageType->currentText(), this));
-    addImageLabel();
+    //addImageLabel();
     rightLayout->addStretch();
 }
 
@@ -109,9 +109,10 @@ void FuncController::mouseReleaseEvent(QMouseEvent *event)
 
 void FuncController::addImageLabel()
 {
-    imgLabels.push_back(new ImageLabel(view->addModelImage("x / (1 - x)"), view, imageType->currentText()));
+    imgLabels.push_back(new ImageLabel(view->addModelImage(), view, imageType->currentText()));
     imgLabelLayout->addWidget(imgLabels.back());
     connect(imgLabels.back(), &ImageLabel::deleteSelf, this, &FuncController::deleteImgLab);
+    view->update();
 }
 
 void FuncController::clearImageLabel()
@@ -120,6 +121,7 @@ void FuncController::clearImageLabel()
         delete lab;
     imgLabels.clear();
     view->clearModelImage();
+    view->update();
 }
 
 void FuncController::deleteImgLab(unsigned index)
@@ -132,18 +134,19 @@ void FuncController::deleteImgLab(unsigned index)
     //更新label对应的图像索引
     for(unsigned i = 0; i < imgLabels.size(); ++i)
         imgLabels[i]->setImgIndex(i);
+    view->update();
 }
 
-ImageLabel::ImageLabel(unsigned index, FuncView *v, QString title, QWidget *parent):
+ImageLabel::ImageLabel(unsigned index, FuncView *v, const QString &title, QWidget *parent):
     QWidget(parent),
     imgIndex(index),
     view(v),
     imgColor(IMAGE_COLOR::IC_RED),
-    funcStr(),
     layout(new QGridLayout(this)),
     getColorBtn(new QPushButton),
     closeBtn(new QPushButton),
-    titleLabel(new QLabel(title)),
+    imgTitle(title),
+    titleLabel(new QLabel("请输入正确函数")),
     funcEdit(new QLineEdit)
 {
     QPalette plt(palette());
@@ -163,6 +166,8 @@ ImageLabel::ImageLabel(unsigned index, FuncView *v, QString title, QWidget *pare
     closeBtn->setIcon(QIcon(":/texts/close"));
     closeBtn->setMaximumSize(16, 16);
     connect(closeBtn, &QPushButton::clicked, this, &ImageLabel::removeImage);
+
+    connect(funcEdit, &QLineEdit::editingFinished, this, &ImageLabel::setImageFunc);
 
     layout->addWidget(getColorBtn, 0, 0);
     layout->addWidget(titleLabel, 0, 1);
@@ -186,11 +191,26 @@ void ImageLabel::setImgColor()
         getColorBtn->setPalette(plt);
 
         view->getFuncImage(imgIndex).second = imgColor;
+        view->update();
     }
 }
 
 void ImageLabel::removeImage()
 {
     view->removeModelImage(imgIndex);
+    view->update();
     emit deleteSelf(imgIndex);
+}
+
+void ImageLabel::setImageFunc()
+{
+    if(view->changeImageFunc(imgIndex, funcEdit->text()))
+    {
+        titleLabel->setText(imgTitle);
+        view->update();
+    }
+    else
+    {
+        titleLabel->setText("无效或空函数");
+    }
 }

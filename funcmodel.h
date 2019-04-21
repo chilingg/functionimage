@@ -6,6 +6,7 @@
 #include <QPointF>
 #include <utility>
 #include "calculation.h"
+#include <QDebug>
 
 class FuncModel
 {
@@ -17,7 +18,7 @@ public:
     double yValue(double x);
     void wipeCacheImage();
     bool valid() const { return status; }
-    void changeFunc(std::string str);
+    void changeFunc(QString str);
 
 private:
     FuncImage funcImages;
@@ -42,9 +43,9 @@ inline void FuncModel::wipeCacheImage()
     funcImages.second.clear();
 }
 
-inline void FuncModel::changeFunc(std::string str)
+inline void FuncModel::changeFunc(QString str)
 {
-    funcImages.first = str;
+    funcImages.first = Calculation(str);
     status = funcImages.first.valid();
 }
 

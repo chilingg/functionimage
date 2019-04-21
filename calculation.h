@@ -2,19 +2,22 @@
 #define CALCULATION_H
 
 #include <vector>
-#include <string>
+#include <QString>
 
 class Calculation
 {
 public:
-    Calculation(std::string str);
-    Calculation(const char *c);
-    double operator()(double input) const;
+    explicit Calculation(QString str);
+    explicit Calculation(const char *c);
+    double operator()(double input);
     bool valid() const { return status; }
+    double calculating(QString &str);
+    double popFristTermValue(QString &str);
 
 private:
+    QString funcStr;
     bool status;
-    int addition[4];
+    double x;
 };
 
 #endif // CALCULATION_H
